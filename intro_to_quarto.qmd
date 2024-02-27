@@ -1,0 +1,53 @@
+---
+title: "Intro to Quarto"
+format: html
+bibliography: references.bib
+---
+
+# 1
+
+## 2
+
+### 3
+
+#### 4
+
+##### 5
+
+###### 6
+
+**bold**
+
+*italic*
+
+# Shopping list
+
+-   onions
+-   milk
+-   chicken
+    -   drums
+    -   thighs
+
+find the workshop materials in [this link.](https://included-crab.nceas.ucsb.edu/s/d2d963a2080f6c29bf560/)
+
+Look up [@freitas2024]
+
+# Classificação Liga Portuguesa
+
+| Equipas | Jogos | PTS |
+|------|------|------|
+| SLB | 23 | 58 |
+| SCP | 22 | 56 |
+| FCP | 23 | 49 |
+
+# Code
+
+```{r}
+x <- 4*8
+
+hights_ft <- c(5.2, 6.0, 5.7)
+
+coef <- 3.14
+
+```
+
