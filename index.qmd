@@ -3,4 +3,14 @@ title: "Github Pages Example"
 format: html
 ---
 
-Hello world
+## Course Lessons
+
+-   [Introduction to Literate Analysis Using Quarto](https://learning.nceas.ucsb.edu/2024-02-arctic/session_03.html)
+-   [Cleaning and Wrangling data](https://learning.nceas.ucsb.edu/2024-02-arctic/session_08.html)
+-   Data Visualization
+-   Functions and packages
+
+## Course Practice Session
+
+-   Practice I: Cleaning and Wrangling and Data Viz
+-   Practice II: Writing functions
