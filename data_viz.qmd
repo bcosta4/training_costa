@@ -140,5 +140,51 @@ ggsave("plots/anual_salmon_esc_region.jpg", width = 8, height = 6, units = "in")
 ```
 
 
+## Interactive viz
+Subset data
+```{r}
+location <- escape %>% 
+  distinct(location, latitude, longitude) %>% 
+drop_na()
+```
 
+```{r}
+datatable(location)
+```
+
+
+Maps with leaflet (OSM)
+```{r}
+leaflet(location) %>%
+    addTiles() %>%
+    addMarkers(
+        lng = ~ longitude,
+        lat = ~ latitude,
+        popup = ~ location
+    )
+```
+
+Maps with leaflet (WMS)
+```{r}
+leaflet(location) %>%
+    addWMSTiles(
+        "https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv?request=getmap&service=wms&BBOX=-90,-180,90,360&crs=EPSG:4326&format=image/jpeg&layers=gebco_latest&width=1200&height=600&version=1.3.0",
+        layers = 'GEBCO_LATEST',
+        attribution = "Imagery reproduced from the GEBCO_2022 Grid, WMS 1.3.0 GetMap, www.gebco.net"
+    ) %>%
+    addCircleMarkers(
+        lng = ~ longitude,
+        lat = ~ latitude,
+        popup = ~ location,
+        radius = 5,
+        # set fill properties
+        fillColor = "salmon",
+        fillOpacity = 1,
+        # set stroke properties
+        stroke = T,
+        weight = 0.5,
+        color = "white",
+        opacity = 1
+    )
+```
 
