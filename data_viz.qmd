@@ -1,0 +1,144 @@
+---
+title: "Intro to Data Viz"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+## Set up
+```{r}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(janitor) # expedite cleaning and exploring data
+library(scales) # scale functions for visualization
+library(leaflet) # interactive maps
+library(DT) # interactive tables
+```
+
+## Load working file - Read data
+```{r}
+escape_raw = read_csv("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/urn%3Auuid%3Af119a05b-bbe7-4aea-93c6-85434dcb1c5e")
+```
+
+The data is daily salmon escapement counts in Alaska 1921-2017 from OceanK database
+
+## Exploring data
+```{r}
+# Doing this means it runs but it does not show on render
+#| eval: false
+
+## Check out column names
+colnames(escape_raw)
+
+## Peak at each column and class
+glimpse(escape_raw)
+
+## From when to when
+range(escape_raw$sampleDate)
+
+## Which species?
+unique(escape_raw$Species)
+```
+
+
+## Cleaning data
+```{r}
+escape = escape_raw %>% 
+  clean_names()
+
+colnames(escape)
+```
+
+
+Calculate the Annual escapements by species and sasap regions
+```{r}
+anual_esc = escape %>% 
+  separate(sample_date, c("year", "month", "day"), sep = "-") %>% 
+  mutate(year = as.numeric(year)) %>%
+  group_by(species, sasap_region, year) %>% 
+  summarize(escapement = sum(daily_count)) %>% 
+  filter(species %in% c("Chinook", "Sockeye", "Chum", "Coho", "Pink")) %>% 
+  ungroup()
+
+unique(anual_esc$species)
+
+head(anual_esc)
+```
+
+## Plotting data
+```{r}
+ggplot(data = anual_esc,
+       mapping = aes(x = species, y = escapement)) +
+  geom_col()
+
+
+```
+
+Making bars blue
+```{r}
+ggplot(anual_esc,
+       aes(x = species, y = escapement,)) +
+  geom_col(fill = "blue")
+  
+```
+
+Adding regions to our plot
+```{r}
+ggplot(anual_esc,
+       aes(x = species, y= escapement, fill = sasap_region)) + 
+  geom_col()
+
+```
+
+
+## Create multiple plots
+```{r}
+## Subset with data from years 2000 to 2016
+
+anual_esc_2000s <- anual_esc %>%
+    filter(year %in% c(2000:2016))
+
+## Quick check
+unique(anual_esc_2000s$year)
+```
+
+Plotting
+```{r}
+ggplot(anual_esc_2000s,
+       aes(x = year, y = escapement, color = species)) + 
+  geom_line() + 
+  geom_point() +
+  facet_wrap(~ sasap_region, scales = "free_y")
+
+```
+
+Customizing plot
+```{r}
+ggplot(anual_esc_2000s,
+       aes(x = year,
+           y = escapement,
+           color = species)) +
+    geom_line() +
+    geom_point() +
+    facet_wrap( ~ sasap_region,
+                scales = "free_y") +
+    labs(title = "Anual Salmon Escapement by Region",
+         y = "Escapement") +
+    theme_bw() + 
+    theme(legend.position = "bottom", 
+          legend.title = element_blank(),
+          axis.text.x = element_text(angle = 45,
+                                     vjust = 0.5))
+    scale_y_continuous(labels = comma)
+```
+
+Saving plot
+```{r}
+ggsave("plots/anual_salmon_esc_region.jpg", width = 8, height = 6, units = "in")
+```
+
+
+
+

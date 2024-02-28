@@ -7,7 +7,7 @@ format: html
 
 -   [Introduction to Literate Analysis Using Quarto](mini_literate_analysis.html)
 -   [Cleaning and Wrangling data](cleaning_wrangling.html)
--   [Data Visualization](https://learning.nceas.ucsb.edu/2024-02-arctic/session_11.html)
+-   [Data Visualization](data_viz.html)
 -   Functions and packages
 
 ## Course Practice Session
