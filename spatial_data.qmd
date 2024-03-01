@@ -1,0 +1,121 @@
+---
+title: "Working with Spatial Data in R"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+## Download data
+```{r}
+knb_url <- "https://dev.nceas.ucsb.edu/knb/d1/mn/v2/object/urn%3Auuid%3Aaceaecb2-1ce0-4d41-a839-d3607d32bb58"
+
+download.file(url = knb_url, destfile = 'shapefile_demo_data.zip')
+
+unzip('shapefile_demo_data.zip', exdir = 'data')
+
+file.remove('shapefile_demo_data.zip')
+```
+
+## Load libraries
+```{r}
+library(readr)
+library(sf)
+library(ggplot2)
+library(leaflet)
+library(scales)
+library(ggspatial)
+library(dplyr)
+```
+
+```{r}
+# read in shapefile using read_sf()
+ak_regions <- read_sf("data/ak_regions_simp.shp")
+```
+
+```{r}
+# quick plot
+plot(ak_regions)
+
+class(ak_regions)
+
+head(ak_regions)
+
+glimpse(ak_regions)
+```
+
+## Check CRS
+```{r}
+st_crs(ak_regions)
+```
+
+## Transform Projection
+```{r}
+ak_regions_3338 <- ak_regions %>% 
+  st_transform(crs = 3338)
+
+
+st_crs(ak_regions_3338)
+
+plot(ak_regions_3338)
+```
+
+
+## sf and Tidyverse
+
+```{r}
+# returns the names of all the columns in dataset
+colnames(ak_regions_3338)
+
+ak_regions_3338 %>%
+    select(region)
+
+unique(ak_regions_3338$region)
+
+ak_regions_3338 %>%
+    filter(region == "Southeast")
+```
+
+
+## Spatial Joins
+
+Calculating the total pop. for each Alaska region
+
+1. Read pop. data
+
+```{r}
+pop <- read_csv("data/alaska_population.csv")
+
+head(pop)
+```
+
+
+2. Transforming pop into spatial object
+
+```{r}
+pop_4326 <- st_as_sf(pop,
+                     coords = c('lng', 'lat'),
+                     crs = 4326,
+                     remove = F)
+
+head(pop_4326)
+```
+
+
+
+
+
+Calculate the total population by region using group_by() and summarize()
+
+```{r}
+pop_region <- pop_joined %>%
+    as.data.frame() %>%
+    group_by(region) %>%
+    summarise(total_pop = sum(population))
+
+head(pop_region)
+```
+
+
+
+
+
