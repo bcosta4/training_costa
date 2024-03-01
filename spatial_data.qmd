@@ -98,6 +98,15 @@ pop_4326 <- st_as_sf(pop,
                      remove = F)
 
 head(pop_4326)
+
+pop_3338 <- st_transform(pop_4326, 
+                         crs = 3338)
+
+pop_joined <- st_join(pop_3338, 
+                      ak_regions_3338, 
+                      join = st_within)
+
+head(pop_joined)
 ```
 
 
@@ -114,6 +123,35 @@ pop_region <- pop_joined %>%
 
 head(pop_region)
 ```
+
+
+Include spatial info by joining to ak_region_3338
+```{r}
+
+pop_region_3338 <- left_join(ak_regions_3338, 
+                             pop_region, 
+                             by = "region")
+
+# plot to check
+plot(pop_region_3338["total_pop"])
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
